@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:xule="http://xbrl.us/xule/2.0/template"
+xmlns:ixt1="http://www.xbrl.org/inlineXBRL/transformation/2010-04-20"
+xmlns:ixt4="http://www.xbrl.org/inlineXBRL/transformation/2020-02-12"
+xmlns:us-gaap="http://fasb.org/us-gaap/2020-01-31"
+xmlns:srt="http://fasb.org/srt/2020-01-31"
+xmlns:ferc-part="http://www.ferc.gov/form/parts"
+xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
+>
+
+<head>
+    <title>Template - AP - 200</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <link rel="stylesheet" type="text/css" href="fs-template.css"/>
+    
+</head>
+
+<body class="xbrl" id="AccountingPoliciesAbstract">
+
+    <table class="schedule-header xbrl" width="100%">
+        <tr class="sch-title">
+            <td>
+                <xule:replace>
+                    <xule:expression class="hide" fact="true">[@dei:EntityRegistrantName @period=$currentDuration]</xule:expression>
+                    <xule:template-display>XBRL US, Inc.</xule:template-display>
+                </xule:replace>
+                </td>
+                
+    </tr>
+    <tr class="sch-title">
+        <td>
+            NOTES TO FINANCIAL STATEMENTS
+            </td>
+
+            <tr class="sch-title">
+   
+                <td colspan="5" class="">
+                    
+                    <xule:replace>
+                        <xule:expression class="hide" fact="true" format='ixt4:date-day-monthname-year-en'> [@dei:DocumentPeriodEndDate @period=$currentDuration]</xule:expression>
+                        <xule:template-display>31 2018</xule:template-display>
+                    </xule:replace>
+                    </td>
+                    
+            </tr>
+            
+</tr>
+       
+    </table>
+    <table class="fs-statement">
+        <tr class="fs-note-title">
+            <td class="fs-statement">
+                    <xule:replace>
+                            <xule:expression class="hide">taxonomy().concept(us-gaap:AccountingPoliciesAbstract).label("http://www.xbrl.org/2003/role/verboseLabel").text
+                            </xule:expression>
+                            <xule:template-display>
+                                    Accounting Policies
+                            </xule:template-display>
+                    </xule:replace>
+                </td>
+
+                <td class="fs-statement">
+                    <xule:replace>
+                            <xule:expression class="hide">taxonomy().concept(us-gaap:AccountingPoliciesAbstract).label("http://www.xbrl.org/2003/role/terseLabel").text
+                            </xule:expression>
+                            <xule:template-display>
+                                    Accounting Policies
+                            </xule:template-display>
+                    </xule:replace>
+                </td>
+                
+    </tr>
+    </table>
+
+    <table class="schedule-row" xule:repeat="Acq">
+        <xule:expression class="hide" name="Acq">
+            
+
+            $data2 = list(for $i in range(1)
+            list(none,none,none,none,none,none,none,none,none)
+              );
+
+              $data = if count(list({covered @us-gaap:BusinessAcquisitionAxis=*})) > 0  
+                
+              $acq = set({covered @us-gaap:BusinessAcquisitionAxis=*}.dimension(us-gaap:BusinessAcquisitionAxis));
+     
+            list(for $x in $acq
+                    list(
+                $x.label.text,
+                if exists({@us-gaap:BusinessAcquisitionNameOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaapBusinessAcquisitionNameOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+
+                if exists({@us-gaap:BusinessAcquisitionDescriptionOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessAcquisitionDescriptionOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+
+                if exists({@us-gaap:BusinessAcquisitionEffectiveDateOfAcquisition1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessAcquisitionEffectiveDateOfAcquisition1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+
+                if exists({@us-gaap:BusinessAcquisitionPercentageOfVotingInterestsAcquired @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessAcquisitionPercentageOfVotingInterestsAcquired @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                if exists({@us-gaap:BusinessCombinationConsiderationTransferred1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationConsiderationTransferred1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+
+                if exists({@us-gaap:PaymentsToAcquireBusinessesGross @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:PaymentsToAcquireBusinessesGross @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                
+                if exists({@us-gaap:BusinessCombinationConsiderationTransferredLiabilitiesIncurred @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationConsiderationTransferredLiabilitiesIncurred @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                if exists({@us-gaap:BusinessCombinationConsiderationTransferredEquityInterestsIssuedAndIssuable @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationConsiderationTransferredEquityInterestsIssuedAndIssuable @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                if exists({@us-gaap:BusinessCombinationConsiderationTransferredOther1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationConsiderationTransferredOther1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                if exists({@us-gaap:BusinessCombinationContingentConsiderationArrangementsBasisForAmount @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationContingentConsiderationArrangementsBasisForAmount @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none
+     
+                    ))
+                
+                else
+                    $data2;
+                
+            
+            $uniqueData = list(for $x in  $data
+            if $x == list(none,none,none,none,none,none,none,none,none)
+                skip
+            else 
+                $x
+            );
+
+            for $row in $uniqueData.sort()
+
+        </xule:expression>
+
+            <tr>
+                <td class="question">Name of Acquisition</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" part="5">$row[1]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+            <tr>
+                <td class="question">The name of the acquiree?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[2]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+            <tr>
+                <td class="question">The description of the acquiree?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[3]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+            <tr>
+                <td class="question">The acquisition date?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[4]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+
+            <tr>
+                <td class="question">The percentage of voting equity interests acquired?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[5]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+
+            <tr>
+                <td class="question">The acquisition-date market value of the total consideration transferred?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[6]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+
+            <tr>
+                <td class="question">The acquisition-date market value of each major class of consideration:</td>
+                
+            </tr>
+
+            <tr>
+                <td class="question">Cash?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[7]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+            <tr>
+                <td class="question">liabilities incurred (for example, a liability for contingent consideration)?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[8]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+
+            <tr>
+                <td class="question">equity interests of the acquirer, including the number of instruments or interests issued or issuable? </td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[9]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+            <tr>
+                <td class="question">other?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[10]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+            <tr>
+                <td class="question">A description of the arrangement and the basis for determining the amount of the payment for contingent consideration arrangements and indemnification assets?</td>
+                <td class="fs-statement">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[11]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer"></td>
+                <td class="no_answer"></td>
+                <td class="na_answer"></td>
+            </tr>
+
+
+            
+
+           
+
+        
+                            
+
+    </table>
+<!--</ix:nonNumeric>-->
+<p></p>
+<div class="schedule-footer">
+
+    <div class="center-text">Page 
+           
+    </div> 
+</div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:xule="http://xbrl.us/xule/2.0/template"
+xmlns:ixt1="http://www.xbrl.org/inlineXBRL/transformation/2010-04-20"
+xmlns:ixt4="http://www.xbrl.org/inlineXBRL/transformation/2020-02-12"
+xmlns:us-gaap="http://fasb.org/us-gaap/2019-01-31"
+xmlns:srt="http://fasb.org/srt/2019-01-31"
+xmlns:ferc-part="http://www.ferc.gov/form/parts"
+xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
+>
+
+<head>
+    <title>Template - AP - 200</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <link rel="stylesheet" type="text/css" href="fs-template.css"/>
+    
+</head>
+
+<body class="xbrl" id="AccountingPoliciesAbstract">
+
+    <table class="schedule-header xbrl" width="100%">
+        <tr class="sch-title">
+            <td>
+                <xule:replace>
+                    <xule:expression class="hide" fact="true">[@dei:EntityRegistrantName @period=$currentDuration]</xule:expression>
+                    <xule:template-display>XBRL US, Inc.</xule:template-display>
+                </xule:replace>
+                </td>
+                
+    </tr>
+    <tr class="sch-title">
+        <td>
+            NOTES TO FINANCIAL STATEMENTS
+            </td>
+
+            <tr class="sch-title">
+   
+                <td colspan="5" class="">
+                    
+                    <xule:replace>
+                        <xule:expression class="hide" fact="true" format='ixt4:date-day-monthname-year-en'> [@dei:DocumentPeriodEndDate @period=$currentDuration]</xule:expression>
+                        <xule:template-display>31 2018</xule:template-display>
+                    </xule:replace>
+                    </td>
+                    
+            </tr>
+            
+</tr>
+       
+    </table>
+    <table class="fs-statement">
+        <tr class="fs-note-title">
+            <td class="fs-statement">
+                    <xule:replace>
+                            <xule:expression class="hide">taxonomy().concept(us-gaap:AccountingPoliciesAbstract).label("http://www.xbrl.org/2003/role/verboseLabel").text
+                            </xule:expression>
+                            <xule:template-display>
+                                    Accounting Policies
+                            </xule:template-display>
+                    </xule:replace>
+                </td>
+
+                <td class="fs-statement">
+                    <xule:replace>
+                            <xule:expression class="hide">taxonomy().concept(us-gaap:AccountingPoliciesAbstract).label("http://www.xbrl.org/2003/role/terseLabel").text
+                            </xule:expression>
+                            <xule:template-display>
+                                    Accounting Policies
+                            </xule:template-display>
+                    </xule:replace>
+                </td>
+                
+    </tr>
+
+    <tr class="schedule-row" xule:repeat="APLineItems">
+                <xule:expression class="hide" name="APLineItems">
+    $data = navigate parent-child descendants from us-gaap:AccountingPoliciesAbstract where $relationship.target.is-abstract == false and  $relationship.target.is-numeric == false returns list (target-name, preferred-label, navigation-depth);
+
+    $data-labels = list(for $row in $data
+            $concept = taxonomy().concept($row[1]);
+            $current = if list({covered @concept = $row[1] @period = $currentDuration}).length > 0
+                            first(list({covered @concept = $row[1] @period = $currentDuration}))
+                        else
+                            none
+            
+            $header = list($concept,
+                            $concept.label($row[2].role.uri).text, //Title of Account
+                            $row[2].role.uri,
+                            $row[3],
+                            "Header"
+                                );
+            $content = list($concept,
+                            $current,
+                            $row[2].role.uri,
+                            $row[3],
+                            "Content"
+                                );
+            list($header ,$content)
+                
+            );
+
+    $agg_list = sum($data-labels);
+    for $rowl in  $agg_list 
+ 
+                </xule:expression>
+                        <td class="note-margin">
+
+                        </td>
+                        <td class="fs-statement">
+                                <xule:replace>
+                                    <xule:expression class="hide" name="APLineItems" html="true" part="4">$rowl[2]</xule:expression>
+                                    <xule:fact>if $rowl[2].is-fact true else false</xule:fact>
+                                    <xule:class location="parent">if $rowl[5]=="Header" "accounting-policy-header" else "accounting-policy"</xule:class> 
+                            </xule:replace>        
+                        </td> 
+                      
+
+                    
+                                    
+        </tr>
+    </table>
+<!--</ix:nonNumeric>-->
+<p></p>
+<div class="schedule-footer">
+
+    <div class="center-text">Page 
+           
+    </div> 
+</div>
+</body>
+</html>

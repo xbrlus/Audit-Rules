@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:xule="http://xbrl.us/xule/2.0/template"
+xmlns:ixt1="http://www.xbrl.org/inlineXBRL/transformation/2010-04-20"
+xmlns:ixt4="http://www.xbrl.org/inlineXBRL/transformation/2020-02-12"
+xmlns:ferc="http://ferc.gov/form/2020-01-01/ferc"
+xmlns:us-gaap="http://fasb.org/us-gaap/2019-01-31"
+xmlns:srt="http://fasb.org/srt/2019-01-31"
+xmlns:ferc-part="http://www.ferc.gov/form/parts"
+xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
+>
+
+<head>
+    <title>Template - IS - 100</title>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <link rel="stylesheet" type="text/css" href="fs-template.css"/>
+    
+</head>
+
+<body class="xbrl" id="IncomeStatementAbstract">
+
+    <table class="fs-statement">
+        <tr class="sch-title">
+            <td colspan="5" class="fs-statement">
+                    <xule:replace>
+                            <xule:expression class="hide">taxonomy().concept(us-gaap:IncomeStatementAbstract).label("http://www.xbrl.org/2003/role/terseLabel").text
+                            </xule:expression>
+                            <xule:template-display>
+                                    Balance Sheet
+                            </xule:template-display>
+                    </xule:replace>
+                </td>
+                
+    </tr>
+    <tr class="sch-title">
+        <td colspan="5">
+            <xule:replace>
+                <xule:expression class="hide" fact="true">[@dei:EntityRegistrantName @period=$currentDuration]</xule:expression>
+                <xule:template-display>XBRL US, Inc.</xule:template-display>
+            </xule:replace>
+            </td>
+            
+</tr>
+<tr class="sch-title">
+   
+    <td colspan="5">
+        Year Ended 
+        <xule:replace>
+            <xule:expression class="hide" fact="true" format='ixt4:date-day-monthname-year-en'> [@dei:DocumentPeriodEndDate @period=$currentDuration]</xule:expression>
+            <xule:template-display>31 2018</xule:template-display>
+        </xule:replace>
+        </td>
+        
+</tr>
+    <tr>
+        <td class="fs-statement description_items"></td>
+        <td class="fs-statement date_items gray-out">
+            <xule:replace>
+                            <xule:expression class="hide">" " + year($currentInstant) + " "
+                            </xule:expression>
+                            <xule:template-display>
+                                    Dec 31, 2019
+                            </xule:template-display>
+                    </xule:replace>
+
+        </td>
+        <td class="fs-statement date_items">
+            <xule:replace>
+                            <xule:expression class="hide">" " +  year($priorInstant) + " "
+                            </xule:expression>
+                            <xule:template-display>
+                                    Dec 31, 2019
+                            </xule:template-display>
+                    </xule:replace>
+        </td>
+    </tr>
+        <tr class="schedule-row" xule:repeat="BSLineItems">
+                <xule:expression class="hide" name="BSLineItems">
+    $data = navigate parent-child descendants from us-gaap:StatementLineItems role "https://xbrl.us//role/IncomeStatement" returns list (target-name, preferred-label, navigation-depth);
+
+    $ProductMembers = navigate parent-child descendants from srt:ProductsAndServicesDomain role "https://xbrl.us//role/IncomeStatement" returns list (target-name, preferred-label, navigation-depth);
+    
+    $data-labels = list(for $row in $data
+            $concept = taxonomy().concept($row[1]);
+            $memberFacts = list(for $member in $ProductMembers
+                            $mem-concept = taxonomy().concept($member[1]);
+                            $currentM = if list([covered @concept = $row[1] @srt:ProductOrServiceAxis=$member[1] @period = $currentDuration]).length > 0
+                                        first(list([covered @concept = $row[1] @srt:ProductOrServiceAxis=$member[1] @period = $currentDuration]))
+                                            else
+                                        none
+                            $priorM = if list([covered @concept = $row[1] @srt:ProductOrServiceAxis=$member[1] @period = $priorDuration]).length > 0
+                                        first(list([covered @concept = $row[1] @srt:ProductOrServiceAxis=$member[1] @period = $priorDuration]))
+                                    else
+                                            none
+                        list($mem-concept,
+                            $mem-concept.label($member[2].role.uri).text, //Title of Account
+                            $currentM,
+                            $priorM,
+                            $member[2].role.uri,
+                            $row[3],
+                            false
+                        )
+            );
+
+            $memberList = list(for $x in $memberFacts
+                                if $x[3] == none and $x[4] == none 
+                                    skip
+                                else
+                                    $x
+            );
+
+            $baseFacts = list(
+                    $current = if list([covered @concept = $row[1] @period = $currentDuration]).length > 0
+                    first(list([covered @concept = $row[1] @period = $currentDuration]))
+                        else
+                                none
+                    $prior = if list([covered @concept = $row[1] @period = $priorDuration]).length > 0
+                            first(list([covered @concept = $row[1] @period = $priorDuration]))
+                        else
+                                none
+                    
+                    list($concept,
+                    $concept.label($row[2].role.uri).text, //Title of Account
+                    $current,
+                    $prior,
+                    $row[2].role.uri,
+                    $row[3],
+                    $concept.is-abstract
+                        ));
+
+            $baseList = list(for $x in $baseFacts
+            if $x[3] == none and $x[4] == none and not $concept.is-abstract
+                skip
+            else
+                $x
+
+            );
+            $memberList + $baseList
+                
+                
+                
+                );
+    for $listItems in  $data-labels
+        for $rowl in $listItems
+
+                </xule:expression>
+                        
+                        <td class="fs-statement description_items">
+                                
+                                <xule:replace>
+                                    <xule:expression class="hide" name="BSLineItems"  part="2">$rowl[2]</xule:expression> 
+                                    <xule:class location="parent">if $rowl[5] == "http://www.xbrl.org/2003/role/totalLabel" "total-row" else ""</xule:class>
+                                   <xule:class location="parent">if $rowl[7] "sch-title" else ""</xule:class> 
+                                    <xule:class location="parent">"padding-" + $rowl[6].string</xule:class>
+                                </xule:replace>
+                                <xule:template-display>UTILITY PLANT</xule:template-display>
+                                
+                        </td> 
+
+                     
+                        <!--Current-->
+                        <td class="fs-statement monetary_items">
+                                <xule:replace>
+                                    <xule:expression class="hide" name="BSLineItems" format="ixt4:num-dot-decimal" fact="true" part="4">$rowl[3]</xule:expression>
+                                    <xule:class location="parent">"gray-out"</xule:class>
+                                    <xule:class location="parent">if $rowl[5] == "http://www.xbrl.org/2003/role/totalLabel" "total-row" else ""</xule:class>
+                            </xule:replace>        
+                        </td> 
+                       <!--Prior-->
+                        <td class="fs-statement monetary_items">
+                                <xule:replace><xule:expression class="hide" name="BSLineItems" format="ixt4:num-dot-decimal" fact="true" part="5">$rowl[4]</xule:expression>
+                                <xule:class location="parent">if $rowl[5] == "http://www.xbrl.org/2003/role/totalLabel" "total-row" else ""</xule:class>
+                                
+                            </xule:replace>       
+                        </td> 
+                       
+
+                          
+                    
+
+                    
+                                    
+        </tr>
+    </table>
+<p></p>
+<div class="schedule-footer">
+
+    <div class="center-text">Page 
+           
+    </div> 
+</div>
+</body>
+</html>
