@@ -22,7 +22,7 @@ xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
         <tr class="sch-title">
             <td>
                 <xule:replace>
-                    <xule:expression class="hide" fact="true">[@dei:EntityRegistrantName @period=$currentDuration]</xule:expression>
+                    <xule:expression class="hide" fact="true">first(list([covered @dei:EntityRegistrantName]))</xule:expression>
                     <xule:template-display>XBRL US, Inc.</xule:template-display>
                 </xule:replace>
                 </td>
@@ -30,7 +30,7 @@ xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
     </tr>
     <tr class="sch-title">
         <td>
-            NOTES TO FINANCIAL STATEMENTS
+            Business Combinations
             </td>
 
             <tr class="sch-title">
@@ -38,7 +38,7 @@ xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
                 <td colspan="5" class="">
                     
                     <xule:replace>
-                        <xule:expression class="hide" fact="true" format='ixt4:date-day-monthname-year-en'> [@dei:DocumentPeriodEndDate @period=$currentDuration]</xule:expression>
+                        <xule:expression class="hide" fact="true" format='ixt4:date-day-monthname-year-en'> first(list([covered @dei:DocumentPeriodEndDate]))</xule:expression>
                         <xule:template-display>31 2018</xule:template-display>
                     </xule:replace>
                     </td>
@@ -48,32 +48,23 @@ xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
 </tr>
        
     </table>
-    <table class="fs-statement">
+    <table class="fs-statement xbrl" width="100%">
         <tr class="fs-note-title">
-            <td class="fs-statement">
+            <td class="fs-statement xbrl">
                     <xule:replace>
-                            <xule:expression class="hide">taxonomy().concept(us-gaap:AccountingPoliciesAbstract).label("http://www.xbrl.org/2003/role/verboseLabel").text
+                            <xule:expression class="hide">taxonomy().concept(us-gaap:BusinessCombinationsAbstract).label.text
                             </xule:expression>
                             <xule:template-display>
-                                    Accounting Policies
+                                Business Combinations
                             </xule:template-display>
                     </xule:replace>
                 </td>
 
-                <td class="fs-statement">
-                    <xule:replace>
-                            <xule:expression class="hide">taxonomy().concept(us-gaap:AccountingPoliciesAbstract).label("http://www.xbrl.org/2003/role/terseLabel").text
-                            </xule:expression>
-                            <xule:template-display>
-                                    Accounting Policies
-                            </xule:template-display>
-                    </xule:replace>
-                </td>
                 
     </tr>
     </table>
 
-    <table class="schedule-row" xule:repeat="Acq">
+    <table class="xbrl" width="100%" xule:repeat="Acq">
         <xule:expression class="hide" name="Acq">
             
 
@@ -81,59 +72,119 @@ xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
             list(none,none,none,none,none,none,none,none,none)
               );
 
-              $data = if count(list({covered @us-gaap:BusinessAcquisitionAxis=*})) > 0  
+              $data = if count(list({covered @us-gaap:BusinessAcquisitionAxis != us-gaap:SeriesOfIndividuallyImmaterialBusinessAcquisitionsMember})) > 0  
                 
-              $acq = set({covered @us-gaap:BusinessAcquisitionAxis=*}.dimension(us-gaap:BusinessAcquisitionAxis));
+              $acq = set({covered @us-gaap:BusinessAcquisitionAxis != us-gaap:SeriesOfIndividuallyImmaterialBusinessAcquisitionsMember}.dimension(us-gaap:BusinessAcquisitionAxis));
      
             list(for $x in $acq
                     list(
                 $x.label.text,
+                //ROW 2
                 if exists({@us-gaap:BusinessAcquisitionNameOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaapBusinessAcquisitionNameOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
-
+                    //ROW 3
                 if exists({@us-gaap:BusinessAcquisitionDescriptionOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessAcquisitionDescriptionOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
-
+                    //ROW 4
                 if exists({@us-gaap:BusinessAcquisitionEffectiveDateOfAcquisition1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessAcquisitionEffectiveDateOfAcquisition1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
-
+                    //ROW 5
                 if exists({@us-gaap:BusinessAcquisitionPercentageOfVotingInterestsAcquired @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessAcquisitionPercentageOfVotingInterestsAcquired @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
+                    //ROW 6
                 if exists({@us-gaap:BusinessCombinationConsiderationTransferred1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessCombinationConsiderationTransferred1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
-
+                    //ROW 7
                 if exists({@us-gaap:PaymentsToAcquireBusinessesGross @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:PaymentsToAcquireBusinessesGross @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
-                
+                    //ROW 8
                 if exists({@us-gaap:BusinessCombinationConsiderationTransferredLiabilitiesIncurred @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessCombinationConsiderationTransferredLiabilitiesIncurred @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
+                    //ROW 9
                 if exists({@us-gaap:BusinessCombinationConsiderationTransferredEquityInterestsIssuedAndIssuable @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessCombinationConsiderationTransferredEquityInterestsIssuedAndIssuable @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
+                    //ROW 10
                 if exists({@us-gaap:BusinessCombinationConsiderationTransferredOther1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessCombinationConsiderationTransferredOther1 @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
                     none,
+                    //ROW 11
+                if exists({@us-gaap:BusinessCombinationContingentConsiderationArrangementsDescription @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationContingentConsiderationArrangementsDescription @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 12
                 if exists({@us-gaap:BusinessCombinationContingentConsiderationArrangementsBasisForAmount @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
                     first(list({@us-gaap:BusinessCombinationContingentConsiderationArrangementsBasisForAmount @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
                 else
+                    none,
+                    //ROW 13
+                if exists({@us-gaap:BusinessCombinationIndemnificationAssetsAmountAsOfAcquisitionDate @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationIndemnificationAssetsAmountAsOfAcquisitionDate @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 14
+                if exists({@us-gaap:ScheduleOfRecognizedIdentifiedAssetsAcquiredAndLiabilitiesAssumedTableTextBlock @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:ScheduleOfRecognizedIdentifiedAssetsAcquiredAndLiabilitiesAssumedTableTextBlock @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 15
+                if exists({@us-gaap:BusinessCombinationRecognizedIdentifiableAssetsAcquiredGoodwillAndLiabilitiesAssumedNet @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationRecognizedIdentifiableAssetsAcquiredGoodwillAndLiabilitiesAssumedNet @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 16
+                if exists({@us-gaap:BusinessCombinationBargainPurchaseGainRecognizedAmount @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationBargainPurchaseGainRecognizedAmount @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 17
+                if exists({@us-gaap:BusinessCombinationAcquisitionOfLessThan100PercentNoncontrollingInterestFairValue @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationAcquisitionOfLessThan100PercentNoncontrollingInterestFairValue @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 18
+                if exists({@us-gaap:BusinessCombinationAcquisitionOfLessThan100PercentNoncontrollingInterestValuationTechnique @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationAcquisitionOfLessThan100PercentNoncontrollingInterestValuationTechnique @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 19
+                if exists({@us-gaap:BusinessCombinationAcquisitionOfLessThan100PercentNoncontrollingInterestSignificantInputs @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:BusinessCombinationAcquisitionOfLessThan100PercentNoncontrollingInterestSignificantInputs @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 20
+                if exists({@us-gaap:ScheduleOfAcquiredFiniteLivedIntangibleAssetsByMajorClassTextBlock @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                    first(list({@us-gaap:ScheduleOfAcquiredFiniteLivedIntangibleAssetsByMajorClassTextBlock @period=* @us-gaap:BusinessAcquisitionAxis = $x @unit}))
+                else
+                    none,
+                    //ROW 21
+                if list({covered @us-gaap:BusinessCombinationRecognizedIdentifiableAssetsAcquiredAndLiabilitiesAssumedIntangibles @period=* @us-gaap:FiniteLivedIntangibleAssetsByMajorClassAxis = * @us-gaap:BusinessAcquisitionAxis = $x @unit}).length > 0
+                    list({covered @us-gaap:BusinessCombinationRecognizedIdentifiableAssetsAcquiredAndLiabilitiesAssumedIntangibles @period=* @us-gaap:FiniteLivedIntangibleAssetsByMajorClassAxis = *  @us-gaap:BusinessAcquisitionAxis = $x @unit})
+                else
+                    none,
+                    //ROW 22
+                if list([covered @us-gaap:AcquiredFiniteLivedIntangibleAssetsWeightedAverageUsefulLife @period=* @us-gaap:FiniteLivedIntangibleAssetsByMajorClassAxis = * @us-gaap:BusinessAcquisitionAxis = $x @unit]).length > 0
+                    list([covered @us-gaap:AcquiredFiniteLivedIntangibleAssetsWeightedAverageUsefulLife @period=* @us-gaap:FiniteLivedIntangibleAssetsByMajorClassAxis = *  @us-gaap:BusinessAcquisitionAxis = $x @unit])
+                else
                     none
-     
+                    
                     ))
                 
                 else
@@ -147,137 +198,561 @@ xmlns:dei="http://xbrl.sec.gov/dei/2019-01-31"
                 $x
             );
 
+
             for $row in $uniqueData.sort()
 
         </xule:expression>
 
+            
+        
             <tr>
-                <td class="question">Name of Acquisition</td>
-                <td class="fs-statement">
-                        <xule:replace><xule:expression class="hide" name="Acq" part="5">$row[1]</xule:expression>   
+                <td class="question fs-statement xbrl" colspan="1">Name of Acquisition</td>
+                <td class="fs-statement xbrl" colspan="4">
+                        <xule:replace><xule:expression class="hide" name="Acq" part="1">$row[1]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                
             </tr>
+           
+            <tr class="col-heading-row">
+                <td class="question col-heading xbrl">Question</td>
+                <td class="fs-statement col-heading xbrl">Reported Value
+                </td> 
+                <td class="yes_answer col-heading xbrl">Yes</td>
+                <td class="no_answer col-heading xbrl">No</td>
+                <td class="na_answer col-heading xbrl">N/A</td>
+            </tr>
+
             <tr>
-                <td class="question">The name of the acquiree?</td>
-                <td class="fs-statement">
-                        <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[2]</xule:expression>   
+                <td class="question xbrl level0">1. Has the acquirer disclosed the following information for each material business combination:</td>
+                <td class="fs-statement col-heading xbrl">
+                </td> 
+                <td class="yes_answer col-heading xbrl"></td>
+                <td class="no_answer col-heading xbrl"></td>
+                <td class="na_answer col-heading xbrl"></td>
+            </tr>
+
+            
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>a.</i>  The name of the acquiree?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="2">$row[2]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[2] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[2] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
             <tr>
-                <td class="question">The description of the acquiree?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level1"><i>b.</i>  The description of the acquiree?</td>
+                <td class="fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[3]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[3] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[3] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
             <tr>
-                <td class="question">The acquisition date?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level1"><i>c.</i>  The acquisition date?</td>
+                <td class="fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[4]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[4] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[4] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
 
             <tr>
-                <td class="question">The percentage of voting equity interests acquired?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level1"><i>d.</i>  The percentage of voting equity interests acquired?</td>
+                <td class="reported fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[5]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl ">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[5] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[5] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
 
             <tr>
-                <td class="question">The acquisition-date market value of the total consideration transferred?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level1"><i>e.</i> The acquisition-date market value of the total consideration transferred?</td>
+                <td class="reported fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[6]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[6] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[6] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
 
             <tr>
-                <td class="question">The acquisition-date market value of each major class of consideration:</td>
+                <td class="question fs-statement xbrl level1"><i>f.</i> The acquisition-date market value of each major class of consideration:</td>
+                <td class="reported fs-statement xbrl"></td>
+                <td class="yes_answer fs-statement xbrl"></td>
+                <td class="no_answer fs-statement xbrl"></td>
+                <td class="na_answer fs-statement xbrl"></td>
                 
             </tr>
 
             <tr>
-                <td class="question">Cash?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl  level2">i. Cash?</td>
+                <td class="fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[7]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[7] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[7] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
             <tr>
-                <td class="question">liabilities incurred (for example, a liability for contingent consideration)?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level2">ii. liabilities incurred (for example, a liability for contingent consideration)?</td>
+                <td class="fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[8]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[8] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[8] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
 
             <tr>
-                <td class="question">equity interests of the acquirer, including the number of instruments or interests issued or issuable? </td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level2">iii. equity interests of the acquirer, including the number of instruments or interests issued or issuable? </td>
+                <td class="fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[9]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[9] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[9] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
             <tr>
-                <td class="question">other?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level2">iv. other?</td>
+                <td class="fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[10]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[10] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[10] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
             <tr>
-                <td class="question">A description of the arrangement and the basis for determining the amount of the payment for contingent consideration arrangements and indemnification assets?</td>
-                <td class="fs-statement">
+                <td class="question fs-statement xbrl level1"><i>g.</i> A description of the arrangement for contingent consideration?</td>
+                <td class="fs-statement xbrl">
                         <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[11]</xule:expression>   
                     </xule:replace>       
                 </td> 
-                <td class="yes_answer"></td>
-                <td class="no_answer"></td>
-                <td class="na_answer"></td>
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[11] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[11] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
             </tr>
 
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>h.</i> The basis for determining the amount of the payment for contingent consideration arrangements?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[12]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[12] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[12] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>i.</i> The indemnification assets?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[13]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[13] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[13] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
 
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>j.</i> A condensed statement of financial position showing the amounts recognized as of
+                    the acquisition date for each major class of assets acquired and liabilities assumed?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[14]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[14] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[14] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
+
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>k.</i> Net identifiable assets acquired and liabilities assumed is reported?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[15]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[15] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[15] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>l.</i> The amount of any gain recognized in a bargain purchase and the line item in the
+                    statement of operations in which the gain is recognized?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[16]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl"></td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="5">if $row[15] > $row[6] and $row[16] == none "Missing" else ""</xule:expression>
+                    </xule:replace> 
+                </td>
+                <td class="na_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="5">if $row[15] > $row[6] and $row[16] == none "" else "n/a"</xule:expression>
+                    </xule:replace> 
+                </td>
+            </tr>
+
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>m.</i> The amount of the noncontrolling interest in the acquiree recognized at the acquisition date?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[17]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[17] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[17] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>n.</i> The measurement basis of the noncontrolling interest in the acquiree recognized at the acquisition date?</td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" format="ixt4:num-dot-decimal" fact="true" part="5">$row[18] + " " + $row[19]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[18] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[18] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
+
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>o.</i> The accounting policy related to intangible assets acquired and those intangible assets recognized separately, including their amounts and useful lives?
+                </td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" fact="true" html="true" part="5">$row[20]</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[20] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[20] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
+
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>p.</i> The amounts related to intangible assets acquired and those intangible assets recognized separately?
+                </td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" part="5">$row[21].join(' + ')</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[21] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[21] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>
+            <tr>
+                <td class="question fs-statement xbrl level1"><i>q.</i> The useful lives related to intangible assets acquired and those intangible assets recognized separately?
+                </td>
+                <td class="fs-statement xbrl">
+                        <xule:replace><xule:expression class="hide" name="Acq" part="22">$row[22].join(', ')</xule:expression>   
+                    </xule:replace>       
+                </td> 
+                <td class="yes_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq" part="3">if $row[22] != none "y"  else ""
+                        </xule:expression>   
+                    </xule:replace>       
+                </td>
+                <td class="no_answer fs-statement xbrl">
+                    <xule:replace>
+                        <xule:expression class="hide" name="Acq"  part="4">if $row[22] == none "n" else ""
+                        </xule:expression>   
+                        
+                    </xule:replace>       
+                </td>
+                <td class="na_answer fs-statement xbrl"></td>
+            </tr>                     
+
+    </table>
+
+    <table class="xbrl" width="100%">
+        <tr>
+            <td class="question fs-statement xbrl" colspan="1">Name of Acquisition</td>
+            <td class="fs-statement xbrl" colspan="4">
+                    <xule:replace><xule:expression class="hide" name="Acq" part="1">taxonomy().concept(us-gaap:SeriesOfIndividuallyImmaterialBusinessAcquisitionsMember).label.text</xule:expression>   
+                </xule:replace>       
+            </td> 
             
+        </tr>
+       
+        <tr class="col-heading-row">
+            <td class="question col-heading xbrl">Question</td>
+            <td class="fs-statement col-heading xbrl">Reported Value
+            </td> 
+            <td class="yes_answer col-heading xbrl">Yes</td>
+            <td class="no_answer col-heading xbrl">No</td>
+            <td class="na_answer col-heading xbrl">N/A</td>
+        </tr>
 
-           
+        <tr>
+            <td class="question xbrl level0">1. For individually immaterial business combinations occurring during the reporting period
+                that are material collectively, has the acquirer disclosed the following information:</td>
+            <td class="fs-statement col-heading xbrl">
+            </td> 
+            <td class="yes_answer col-heading xbrl"></td>
+            <td class="no_answer col-heading xbrl"></td>
+            <td class="na_answer col-heading xbrl"></td>
+        </tr>
 
         
-                            
+        <tr>
+            <td class="question fs-statement xbrl level1"><i>a.</i>  The number of entities acquired and a brief description of those entities?</td>
+            <td class="fs-statement xbrl">
+                    <xule:replace><xule:expression class="hide" fact="true" part="2">if exists({@us-gaap:BusinessAcquisitionNameOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = us-gaap:SeriesOfIndividuallyImmaterialBusinessAcquisitionsMember @unit})
+                        first(list({@us-gaapBusinessAcquisitionNameOfAcquiredEntity @period=* @us-gaap:BusinessAcquisitionAxis = us-gaap:SeriesOfIndividuallyImmaterialBusinessAcquisitionsMember @unit}))
+                    else
+                        none</xule:expression>   
+                </xule:replace>       
+            </td> 
+            <td class="yes_answer fs-statement xbrl">
+                <xule:replace>
+                    <xule:expression class="hide" name="Acq" part="3">if $row[2] != none "y"  else ""
+                    </xule:expression>   
+                </xule:replace>       
+            </td>
+            <td class="no_answer fs-statement xbrl">
+                <xule:replace>
+                    <xule:expression class="hide" name="Acq"  part="4">if $row[2] == none "n" else ""
+                    </xule:expression>   
+                    
+                </xule:replace>       
+            </td>
+            <td class="na_answer fs-statement xbrl"></td>
+        </tr>
+        <tr>
+            <td class="question fs-statement xbrl level1"><i>b.</i>  The description of the acquiree?</td>
+            <td class="fs-statement xbrl">
+                    <xule:replace><xule:expression class="hide" name="Acq" fact="true" part="5">$row[3]</xule:expression>   
+                </xule:replace>       
+            </td> 
+            <td class="yes_answer fs-statement xbrl">
+                <xule:replace>
+                    <xule:expression class="hide" name="Acq" part="3">if $row[3] != none "y"  else ""
+                    </xule:expression>   
+                </xule:replace>       
+            </td>
+            <td class="no_answer fs-statement xbrl">
+                <xule:replace>
+                    <xule:expression class="hide" name="Acq"  part="4">if $row[3] == none "n" else ""
+                    </xule:expression>   
+                    
+                </xule:replace>       
+            </td>
+            <td class="na_answer fs-statement xbrl"></td>
+        </tr>
+
 
     </table>
 <!--</ix:nonNumeric>-->
